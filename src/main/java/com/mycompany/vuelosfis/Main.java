@@ -8,7 +8,7 @@ package com.mycompany.vuelosfis;
  *
  * @author OWNER
  */
-public class VuelosFis {
+public class Main {
 
     public static void main(String[] args) {
         System.out.println("Hello World!");
