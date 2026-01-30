@@ -1,9 +1,13 @@
 
 package com.mycompany.vuelosfis;
 
+import opp.View.VistaLogin;
+
 public class Main {
 
     public static void main(String[] args) {
-        System.out.println("Hello World!");
+        VistaLogin vi = new VistaLogin();
+        vi.setVisible(true);
+        
     }
 }
