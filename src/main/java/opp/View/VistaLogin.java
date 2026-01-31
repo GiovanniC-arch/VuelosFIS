@@ -109,7 +109,7 @@ public class VistaLogin extends javax.swing.JFrame {
             JOptionPane.WARNING_MESSAGE);
     } else {
         // Abrir nueva ventana
-        VuelosFis ventanaPrincipal = new VuelosFis();
+        VistaMain ventanaPrincipal = new VistaMain();
         ventanaPrincipal.setVisible(true);
         this.dispose(); // cerrar login
     }
