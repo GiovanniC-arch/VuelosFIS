@@ -1,5 +1,5 @@
 
-package com.mycompany.vuelosfis;
+package app;
 
 import opp.View.VistaLogin;
 
