@@ -2,7 +2,7 @@
 package opp.Controller;
 
 import java.util.List;
-import oop.Repository.CiudadRepository;
+import Repository.CiudadRepository;
 import opp.Model.Ciudad;
 
 
@@ -31,3 +31,4 @@ public class VueloController {
 
 
 }
+
