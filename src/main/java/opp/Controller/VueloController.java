@@ -1,34 +1,23 @@
-
 package opp.Controller;
 
-import java.util.List;
-import Repository.CiudadRepository;
+import Service.VueloService;
 import opp.Model.Ciudad;
-
+import opp.Model.Vuelo;
+import java.util.List;
 
 public class VueloController {
-    private CiudadRepository ciudadRepo;
 
-    // Constructor: aquí se crea el repositorio y se carga el CSV
-    public VueloController() {
-        ciudadRepo = new CiudadRepository("ciudades.csv");
+    private VueloService vueloService;
 
-        // Prueba rápida: imprimir las ciudades cargadas
-        for (Ciudad c : ciudadRepo.getCiudades()) {
-            System.out.println("Ciudad cargada: " + c.getNombre());
-        }
+    public VueloController(VueloService vueloService) {
+        this.vueloService = vueloService;
     }
 
-    // Método para filtrar ciudades según el texto escrito
+    public List<Vuelo> buscarVuelos(String origen, String destino, int pasajeros, boolean soloIda) {
+        return vueloService.buscarVuelos(origen, destino, soloIda, pasajeros);
+    }
+
     public List<Ciudad> filtrarCiudades(String texto) {
-        return ciudadRepo.filtrarPorNombre(texto);
+        return vueloService.filtrarCiudades(texto);
     }
-
-    // Método para obtener todas las ciudades (si lo necesitas en la vista)
-    public List<Ciudad> getTodasCiudades() {
-        return ciudadRepo.getCiudades();
-    }
-
-
 }
-

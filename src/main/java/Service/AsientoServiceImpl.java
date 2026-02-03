@@ -8,6 +8,6 @@ package Service;
  *
  * @author OWNER
  */
-public class ReservaService {
+public class AsientoServiceImpl {
     
 }

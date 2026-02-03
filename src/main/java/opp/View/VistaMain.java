@@ -1,115 +1,98 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package opp.View;
 
-import java.util.List;
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.*;
+import DAO.VueloArchivoDAO;
+import Service.VueloService;
+import Service.VueloServiceImpl;
 import opp.Controller.VueloController;
 import opp.Model.Ciudad;
 
-/**
- *
- * @author OWNER
- */
+import java.util.List;
+import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+
 public class VistaMain extends javax.swing.JFrame {
-    private VueloController vueloController;
+
+    private VueloController controller;
     private JPopupMenu sugerenciasOrigen;
     private JPopupMenu sugerenciasDestino;
 
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(VistaMain.class.getName());
-
-    /**
-     * Creates new form VuelosFis
-     */
     public VistaMain() {
+
+        VueloService service =
+                new VueloServiceImpl(new VueloArchivoDAO());
+
+        controller = new VueloController(service);
+
         initComponents();
-        vueloController = new VueloController(); // ← ya no lees CSV aquí
         inicializarAutoCompletarOrigen();
         inicializarAutoCompletarDestino();
-
     }
-    
+
     private void inicializarAutoCompletarOrigen() {
         sugerenciasOrigen = new JPopupMenu();
 
         txtOrigen.getDocument().addDocumentListener(new DocumentListener() {
-            public void insertUpdate(DocumentEvent e) { actualizarSugerencias(); }
-            public void removeUpdate(DocumentEvent e) { actualizarSugerencias(); }
+            public void insertUpdate(DocumentEvent e) { actualizar(); }
+            public void removeUpdate(DocumentEvent e) { actualizar(); }
             public void changedUpdate(DocumentEvent e) {}
 
-            private void actualizarSugerencias() {
+            private void actualizar() {
                 sugerenciasOrigen.removeAll();
                 String texto = txtOrigen.getText().trim();
-                if (texto.isEmpty()) {
-                    sugerenciasOrigen.setVisible(false);
-                    return;
-                }
+                if (texto.isEmpty()) return;
 
-                List<Ciudad> coincidencias = vueloController.filtrarCiudades(texto);
-                for (Ciudad ciudad : coincidencias) {
-                    JMenuItem item = new JMenuItem(ciudad.toString());
-                    item.addActionListener(ev -> {
-                        txtOrigen.setText(ciudad.getNombre());
+                List<Ciudad> ciudades = controller.filtrarCiudades(texto);
+
+                for (Ciudad c : ciudades) {
+                    JMenuItem item = new JMenuItem(c.getNombre());
+                    item.addActionListener(e -> {
+                        txtOrigen.setText(c.getNombre());
                         sugerenciasOrigen.setVisible(false);
                     });
                     sugerenciasOrigen.add(item);
                 }
 
-                if (!coincidencias.isEmpty()) {
+                if (!ciudades.isEmpty()) {
                     sugerenciasOrigen.show(txtOrigen, 0, txtOrigen.getHeight());
-                    txtOrigen.requestFocusInWindow();
-                } else {
-                    sugerenciasOrigen.setVisible(false);
                 }
             }
         });
     }
-    
+
     private void inicializarAutoCompletarDestino() {
         sugerenciasDestino = new JPopupMenu();
 
         txtDestino.getDocument().addDocumentListener(new DocumentListener() {
-            public void insertUpdate(DocumentEvent e) { actualizarSugerencias(); }
-            public void removeUpdate(DocumentEvent e) { actualizarSugerencias(); }
+            public void insertUpdate(DocumentEvent e) { actualizar(); }
+            public void removeUpdate(DocumentEvent e) { actualizar(); }
             public void changedUpdate(DocumentEvent e) {}
 
-            private void actualizarSugerencias() {
+            private void actualizar() {
                 sugerenciasDestino.removeAll();
                 String texto = txtDestino.getText().trim();
-                if (texto.isEmpty()) {
-                    sugerenciasDestino.setVisible(false);
-                    return;
-                }
+                if (texto.isEmpty()) return;
 
-                List<Ciudad> coincidencias = vueloController.filtrarCiudades(texto);
-                for (Ciudad ciudad : coincidencias) {
-                    JMenuItem item = new JMenuItem(ciudad.toString());
-                    item.addActionListener(ev -> {
-                        txtDestino.setText(ciudad.getNombre());
+                List<Ciudad> ciudades = controller.filtrarCiudades(texto);
+
+                for (Ciudad c : ciudades) {
+                    JMenuItem item = new JMenuItem(c.getNombre());
+                    item.addActionListener(e -> {
+                        txtDestino.setText(c.getNombre());
                         sugerenciasDestino.setVisible(false);
                     });
                     sugerenciasDestino.add(item);
                 }
 
-                if (!coincidencias.isEmpty()) {
+                if (!ciudades.isEmpty()) {
                     sugerenciasDestino.show(txtDestino, 0, txtDestino.getHeight());
-                    txtDestino.requestFocusInWindow();
-                } else {
-                    sugerenciasDestino.setVisible(false);
                 }
             }
         });
     }
 
-    
-    
-
+    // initComponents() y variables generadas siguen igual
+}
 
 
 
@@ -406,28 +389,7 @@ public class VistaMain extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex) {
-            logger.log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new VistaMain().setVisible(true));
-    }
-
+  
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBuscarVuelo;
     private javax.swing.JButton btnIda;

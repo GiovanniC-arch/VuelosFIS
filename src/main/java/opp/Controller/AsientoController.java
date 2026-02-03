@@ -2,6 +2,6 @@
 package opp.Controller;
 
 
-public class ReservaController {
+public class AsientoController {
     
 }

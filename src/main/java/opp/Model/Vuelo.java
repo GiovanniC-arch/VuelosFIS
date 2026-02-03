@@ -1,26 +1,18 @@
 package opp.Model;
 
-import java.time.LocalDateTime;
-
 public class Vuelo {
 
     private String codigo;
     private Ruta ruta;
-    private Avion avion;
-    private LocalDateTime fechaSalida;
+    private String hora;
+    private int asientosDisponibles;
     private double precio;
 
-    // Constructor vacío (JavaBeans)
-    public Vuelo() {
-    }
-
-    // Constructor COMPLETO (el que usa el repository)
-    public Vuelo(String codigo, Ruta ruta, Avion avion,
-                 LocalDateTime fechaSalida, double precio) {
+    public Vuelo(String codigo, Ruta ruta, String hora, int asientosDisponibles, double precio) {
         this.codigo = codigo;
         this.ruta = ruta;
-        this.avion = avion;
-        this.fechaSalida = fechaSalida;
+        this.hora = hora;
+        this.asientosDisponibles = asientosDisponibles;
         this.precio = precio;
     }
 
@@ -28,20 +20,16 @@ public class Vuelo {
         return codigo;
     }
 
-    public void setCodigo(String codigo) {
-        this.codigo = codigo;
-    }
-
     public Ruta getRuta() {
         return ruta;
     }
 
-    public Avion getAvion() {
-        return avion;
+    public String getHora() {
+        return hora;
     }
 
-    public LocalDateTime getFechaSalida() {
-        return fechaSalida;
+    public int getAsientosDisponibles() {
+        return asientosDisponibles;
     }
 
     public double getPrecio() {

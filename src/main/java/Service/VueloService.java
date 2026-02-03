@@ -1,23 +1,16 @@
-
 package Service;
 
 import opp.Model.Vuelo;
-import Repository.VueloRepository;
 import java.util.List;
 
-public class VueloService {
+public interface VueloService {
 
-    private final VueloRepository vueloRepository;
+    List<Vuelo> buscarVuelos(
+        String origen,
+        String destino,
+        boolean soloIda,
+        int pasajeros
+    );
 
-    public VueloService(VueloRepository vueloRepository) {
-        this.vueloRepository = vueloRepository;
-    }
-
-    public List<Vuelo> listarVuelos() {
-        return vueloRepository.obtenerTodos();
-    }
-
-    public Vuelo buscarVuelo(String codigo) {
-        return vueloRepository.buscarPorCodigo(codigo);
-    }
+    List<String> filtrarCiudades(String texto);
 }
