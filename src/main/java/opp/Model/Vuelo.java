@@ -1,38 +1,35 @@
 package opp.Model;
 
+import java.time.LocalDate;
+
 public class Vuelo {
-
-    private String codigo;
-    private Ruta ruta;
-    private String hora;
-    private int asientosDisponibles;
+    private Ciudad origen;
+    private Ciudad destino;
+    private String horaSalida;
+    private String horaLlegada;
+    private String duracion;
     private double precio;
+    private LocalDate fecha; // se asigna al confirmar la reserva
 
-    public Vuelo(String codigo, Ruta ruta, String hora, int asientosDisponibles, double precio) {
-        this.codigo = codigo;
-        this.ruta = ruta;
-        this.hora = hora;
-        this.asientosDisponibles = asientosDisponibles;
+    public Vuelo(Ciudad origen, Ciudad destino, String horaSalida,
+                 String horaLlegada, String duracion, double precio, LocalDate fecha) {
+        this.origen = origen;
+        this.destino = destino;
+        this.horaSalida = horaSalida;
+        this.horaLlegada = horaLlegada;
+        this.duracion = duracion;
         this.precio = precio;
+        this.fecha = fecha;
     }
 
-    public String getCodigo() {
-        return codigo;
-    }
+    public Ciudad getOrigen() { return origen; }
+    public Ciudad getDestino() { return destino; }
+    public String getHoraSalida() { return horaSalida; }
+    public String getHoraLlegada() { return horaLlegada; }
+    public String getDuracion() { return duracion; }
+    public double getPrecio() { return precio; }
+    public LocalDate getFecha() { return fecha; }
 
-    public Ruta getRuta() {
-        return ruta;
-    }
+    public void setFecha(LocalDate fecha) { this.fecha = fecha; }
 
-    public String getHora() {
-        return hora;
-    }
-
-    public int getAsientosDisponibles() {
-        return asientosDisponibles;
-    }
-
-    public double getPrecio() {
-        return precio;
-    }
 }

@@ -1,23 +1,22 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
+
 package opp.View;
 
-/**
- *
- * @author usuario
- */
+import javax.swing.JOptionPane;
+import opp.Model.Pasajero;
+import opp.Model.Reserva;
+
 public class VistaInfoPasajeros extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(VistaInfoPasajeros.class.getName());
+    private int contadorPasajeros = 0;
+    private Reserva reserva;
 
-    /**
-     * Creates new form VistaInfoPasajeros
-     */
-    public VistaInfoPasajeros() {
+    public VistaInfoPasajeros(Reserva reserva) {
         initComponents();
+        this.reserva = reserva;
     }
+        
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -49,8 +48,9 @@ public class VistaInfoPasajeros extends javax.swing.JFrame {
         txtCedula = new javax.swing.JTextField();
         txtCorreo = new javax.swing.JTextField();
         txtNumeroTelef = new javax.swing.JTextField();
-        jComboBox1 = new javax.swing.JComboBox<>();
-        btnSiguiente2 = new javax.swing.JButton();
+        cmbGenero = new javax.swing.JComboBox<>();
+        btnContinuar = new javax.swing.JButton();
+        btnGuardar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -145,11 +145,14 @@ public class VistaInfoPasajeros extends javax.swing.JFrame {
         txtNumeroTelef.setFont(new java.awt.Font("Segoe UI Semibold", 3, 14)); // NOI18N
         txtNumeroTelef.addActionListener(this::txtNumeroTelefActionPerformed);
 
-        jComboBox1.setBackground(new java.awt.Color(214, 234, 245));
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Hombre", "Mujer", "Alien" }));
+        cmbGenero.setBackground(new java.awt.Color(214, 234, 245));
+        cmbGenero.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Hombre", "Mujer", "Alien" }));
 
-        btnSiguiente2.setText("Siguiente");
-        btnSiguiente2.addActionListener(this::btnSiguiente2ActionPerformed);
+        btnContinuar.setText("Continuar");
+        btnContinuar.addActionListener(this::btnContinuarActionPerformed);
+
+        btnGuardar.setText("Guardar");
+        btnGuardar.addActionListener(this::btnGuardarActionPerformed);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -181,10 +184,13 @@ public class VistaInfoPasajeros extends javax.swing.JFrame {
                             .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, 143, Short.MAX_VALUE)
                             .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jComboBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(btnSiguiente2)
-                                .addComponent(txtNumeroTelef, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(cmbGenero, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(txtNumeroTelef, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(btnContinuar)
+                                    .addComponent(btnGuardar))
+                                .addGap(14, 14, 14))))
                     .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(385, Short.MAX_VALUE))
         );
@@ -212,7 +218,7 @@ public class VistaInfoPasajeros extends javax.swing.JFrame {
                         .addGap(11, 11, 11)
                         .addComponent(txtFechaINac, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(cmbGenero, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(6, 6, 6)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -232,9 +238,11 @@ public class VistaInfoPasajeros extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtCorreo, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtNumeroTelef, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(36, 36, 36)
-                .addComponent(btnSiguiente2)
-                .addContainerGap(170, Short.MAX_VALUE))
+                .addGap(30, 30, 30)
+                .addComponent(btnGuardar)
+                .addGap(18, 18, 18)
+                .addComponent(btnContinuar)
+                .addContainerGap(135, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -285,19 +293,50 @@ public class VistaInfoPasajeros extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtNumeroTelefActionPerformed
 
-    private void btnSiguiente2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSiguiente2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnSiguiente2ActionPerformed
+    private void btnContinuarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnContinuarActionPerformed
+        if (reserva.getListaPasajeros().size() < reserva.getPasajeros()) {
+            JOptionPane.showMessageDialog(this, "Debe ingresar todos los pasajeros antes de continuar");
+            return;
+        }
 
-    /**
-     * @param args the command line arguments
-     */
+        // Avanzar a VistaFactura
+        VistaFactura vistaFactura = new VistaFactura(reserva);
+        vistaFactura.setVisible(true);
+        this.dispose();
+
+    }//GEN-LAST:event_btnContinuarActionPerformed
+
+    private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
+        // TODO add your handling code here:
+        Pasajero p = new Pasajero(
+            txtNombre.getText(),
+            txtApellido.getText(),
+            txtFechaINac.getText(),
+            txtCedula.getText(),
+            txtNacionalidad.getText(),
+            txtCorreo.getText(),
+            txtNumeroTelef.getText(),
+            cmbGenero.getSelectedItem().toString()
+        );
+
+        reserva.addPasajero(p);
+        contadorPasajeros++;
+
+        JOptionPane.showMessageDialog(this, "Pasajero " + contadorPasajeros + " guardado correctamente");
+
+        // Limpiar campos para el siguiente pasajero
+        txtNombre.setText("");
+        txtApellido.setText("");
+        txtFechaINac.setText("");
+        txtCedula.setText("");
+        txtNacionalidad.setText("");
+        txtCorreo.setText("");
+        txtNumeroTelef.setText("");
+        cmbGenero.setSelectedIndex(0);
+
+    }//GEN-LAST:event_btnGuardarActionPerformed
+
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
@@ -308,15 +347,20 @@ public class VistaInfoPasajeros extends javax.swing.JFrame {
         } catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex) {
             logger.log(java.util.logging.Level.SEVERE, null, ex);
         }
-        //</editor-fold>
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new VistaInfoPasajeros().setVisible(true));
+        // ⚠️ CORREGIDO: el main no puede llamar al constructor vacío
+        // Aquí solo se deja un ejemplo de prueba con una Reserva ficticia
+        java.awt.EventQueue.invokeLater(() -> {
+            Reserva reservaPrueba = new Reserva(null, null, "Ida", "01/01/2026", "", 1);
+            new VistaInfoPasajeros(reservaPrueba).setVisible(true);
+        });
     }
 
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnSiguiente2;
-    private javax.swing.JComboBox<String> jComboBox1;
+    private javax.swing.JButton btnContinuar;
+    private javax.swing.JButton btnGuardar;
+    private javax.swing.JComboBox<String> cmbGenero;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;

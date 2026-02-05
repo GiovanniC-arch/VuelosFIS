@@ -1,23 +1,103 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
+
 package opp.View;
 
-/**
- *
- * @author OWNER
- */
+import java.io.FileWriter;
+import java.io.IOException;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import opp.Model.Pasajero;
+import opp.Model.Reserva;
+import opp.Model.Vuelo;
+
 public class VistaFactura extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(VistaFactura.class.getName());
+    private Reserva reserva;
 
-    /**
-     * Creates new form VistaFactura
-     */
-    public VistaFactura() {
+    public VistaFactura(Reserva reserva) {
         initComponents();
+        this.reserva = reserva;
+        cargarDatos();
     }
+
+    // Método para cargar datos en los textfields y tablas
+    private void cargarDatos() {
+        // Datos generales
+        txtOrigenFactura.setText(reserva.getOrigen().getNombre());
+        txtDestinoFactura.setText(reserva.getDestino().getNombre());
+        txtFechaIdaFactura.setText(reserva.getFechaIda());
+        txtFechaVueltaFactura.setText(reserva.getFechaVuelta());
+        txtTipoVuelo.setText(reserva.getTipoVuelo());
+        txtNPasajeros.setText(String.valueOf(reserva.getPasajeros()));
+
+        // Tabla de pasajeros
+        DefaultTableModel modeloPasajeros = new DefaultTableModel();
+        modeloPasajeros.addColumn("Nombre");
+        modeloPasajeros.addColumn("Apellido");
+        modeloPasajeros.addColumn("Cédula");
+        modeloPasajeros.addColumn("Nacionalidad");
+        modeloPasajeros.addColumn("Género");
+        modeloPasajeros.addColumn("Correo");
+        modeloPasajeros.addColumn("Teléfono");
+
+        for (Pasajero p : reserva.getListaPasajeros()) {
+            modeloPasajeros.addRow(new Object[]{
+                p.getNombre(), p.getApellido(), p.getCedula(),
+                p.getNacionalidad(), p.getGenero(),
+                p.getCorreo(), p.getTelefono()
+            });
+        }
+        tblPasajerosFactura.setModel(modeloPasajeros);
+
+        // Tabla de asientos
+        DefaultTableModel modeloAsientos = new DefaultTableModel();
+        modeloAsientos.addColumn("Vuelo");
+        modeloAsientos.addColumn("Código Asiento");
+        modeloAsientos.addColumn("Precio");
+
+        double precioAsientoUnitario = 12.0; // puedes luego variar por fila si quieres
+        for (String asiento : reserva.getAsientosIda()) {
+            modeloAsientos.addRow(new Object[]{"Ida", asiento, precioAsientoUnitario});
+        }
+        for (String asiento : reserva.getAsientosVuelta()) {
+            modeloAsientos.addRow(new Object[]{"Vuelta", asiento, precioAsientoUnitario});
+        }
+        tblAsientosFactura.setModel(modeloAsientos);
+
+        // Precios de vuelos desde el CSV
+        double precioVueloIda = 0;
+        double precioVueloVuelta = 0;
+
+        Vuelo vueloIda = reserva.getVueloIda();
+        if (vueloIda != null) {
+            precioVueloIda = vueloIda.getPrecio() * reserva.getPasajeros();
+        }
+
+        if (reserva.isEsIdaVuelta()) {
+            Vuelo vueloVuelta = reserva.getVueloVuelta();
+            if (vueloVuelta != null) {
+                precioVueloVuelta = vueloVuelta.getPrecio() * reserva.getPasajeros();
+            }
+        }
+
+        double precioVuelos = precioVueloIda + precioVueloVuelta;
+
+        // 🔥 Ajuste Premium
+        if ("Premium".equalsIgnoreCase(reserva.getTipoVuelo())) {
+            precioVuelos = precioVuelos * 1.5; // ejemplo: +50% sobre el precio base
+        }
+
+        double precioAsientos = (reserva.getAsientosIda().size() + reserva.getAsientosVuelta().size()) * precioAsientoUnitario;
+        double total = precioVuelos + precioAsientos;
+
+        txtPrecioVuelos.setText(String.valueOf(precioVuelos));
+        txtPrecioAsientos.setText(String.valueOf(precioAsientos));
+        txtTotal.setText(String.valueOf(total));
+    }
+
+
+
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -28,37 +108,341 @@ public class VistaFactura extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPanel1 = new javax.swing.JPanel();
+        jPanel2 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        txtOrigenFactura = new javax.swing.JTextField();
+        jLabel3 = new javax.swing.JLabel();
+        txtDestinoFactura = new javax.swing.JTextField();
+        jLabel4 = new javax.swing.JLabel();
+        txtFechaIdaFactura = new javax.swing.JTextField();
+        jLabel5 = new javax.swing.JLabel();
+        txtFechaVueltaFactura = new javax.swing.JTextField();
+        jLabel6 = new javax.swing.JLabel();
+        txtTipoVuelo = new javax.swing.JTextField();
+        jLabel8 = new javax.swing.JLabel();
+        txtNPasajeros = new javax.swing.JTextField();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tblPasajerosFactura = new javax.swing.JTable();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tblAsientosFactura = new javax.swing.JTable();
+        jLabel9 = new javax.swing.JLabel();
+        jLabel10 = new javax.swing.JLabel();
+        jLabel11 = new javax.swing.JLabel();
+        txtTotal = new javax.swing.JTextField();
+        btnComprar = new javax.swing.JButton();
+        jLabel13 = new javax.swing.JLabel();
+        txtPrecioVuelos = new javax.swing.JTextField();
+        jLabel14 = new javax.swing.JLabel();
+        txtPrecioAsientos = new javax.swing.JTextField();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jPanel1.setBackground(new java.awt.Color(182, 221, 252));
+
+        jPanel2.setBackground(new java.awt.Color(0, 153, 204));
+
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/logoavion.png"))); // NOI18N
+
+        jLabel7.setFont(new java.awt.Font("Segoe UI Semibold", 3, 18)); // NOI18N
+        jLabel7.setText("VuelosFIS");
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(29, 29, 29)
+                        .addComponent(jLabel1))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(44, 44, 44)
+                        .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap(9, Short.MAX_VALUE)
+                .addComponent(jLabel7)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+
+        jLabel2.setText("Origen");
+
+        jLabel3.setText("Destino");
+
+        jLabel4.setText("Fecha de ida");
+
+        jLabel5.setText("Fecha de vuelta");
+
+        jLabel6.setText("Tipo de vuelo");
+
+        jLabel8.setText("N_Pasajeros");
+
+        tblPasajerosFactura.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane1.setViewportView(tblPasajerosFactura);
+
+        tblAsientosFactura.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane2.setViewportView(tblAsientosFactura);
+
+        jLabel9.setText("Pasajeros");
+
+        jLabel10.setText("Codigo de asientos");
+
+        jLabel11.setFont(new java.awt.Font("Segoe UI Semibold", 3, 36)); // NOI18N
+        jLabel11.setText("TOTAL");
+
+        txtTotal.setFont(new java.awt.Font("Segoe UI Semibold", 3, 24)); // NOI18N
+
+        btnComprar.setBackground(new java.awt.Color(51, 153, 255));
+        btnComprar.setFont(new java.awt.Font("Segoe UI Semibold", 3, 24)); // NOI18N
+        btnComprar.setText("Comprar");
+        btnComprar.addActionListener(this::btnComprarActionPerformed);
+
+        jLabel13.setText("Precio vuelos");
+
+        jLabel14.setText("Precio asientos");
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(26, 26, 26)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txtOrigenFactura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel9))
+                                .addGap(34, 34, 34)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel3)
+                                    .addComponent(txtDestinoFactura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(54, 54, 54)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel4)
+                                    .addComponent(txtFechaIdaFactura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(47, 47, 47)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel5)
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addGap(6, 6, 6)
+                                        .addComponent(txtFechaVueltaFactura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(44, 44, 44)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(txtTipoVuelo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel6))
+                                .addGap(40, 40, 40)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel8)
+                                    .addComponent(txtNPasajeros, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(15, 15, 15)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 757, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 757, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addGap(9, 9, 9)
+                                        .addComponent(jLabel10))
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jLabel11)
+                                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                                .addComponent(txtTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(79, 79, 79)
+                                                .addComponent(btnComprar, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                        .addGap(30, 30, 30)))))
+                        .addGap(0, 21, Short.MAX_VALUE)))
+                .addContainerGap())
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(24, 24, 24)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel13)
+                    .addComponent(jLabel14))
+                .addGap(32, 32, 32)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtPrecioVuelos, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtPrecioAsientos, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(17, 17, 17)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel3)
+                    .addComponent(jLabel4)
+                    .addComponent(jLabel5)
+                    .addComponent(jLabel6)
+                    .addComponent(jLabel8))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtOrigenFactura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtDestinoFactura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtFechaIdaFactura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtFechaVueltaFactura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtTipoVuelo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtNPasajeros, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(14, 14, 14)
+                .addComponent(jLabel9)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(42, 42, 42)
+                .addComponent(jLabel10)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(25, 25, 25)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel13)
+                    .addComponent(txtPrecioVuelos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel14)
+                    .addComponent(txtPrecioAsientos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(19, 19, 19)
+                .addComponent(jLabel11)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(btnComprar, javax.swing.GroupLayout.DEFAULT_SIZE, 53, Short.MAX_VALUE)
+                    .addComponent(txtTotal))
+                .addContainerGap(31, Short.MAX_VALUE))
+        );
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnComprarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnComprarActionPerformed
+        try (FileWriter writer = new FileWriter("src/main/java/RepoDinamicos/compras.csv", true)) {
+        
+        // Guardar datos generales de la reserva
+        writer.write("Origen: " + reserva.getOrigen().getNombre() + ",");
+        writer.write("Destino: " + reserva.getDestino().getNombre() + ",");
+        writer.write("Fecha Ida: " + reserva.getFechaIda() + ",");
+        writer.write("Fecha Vuelta: " + reserva.getFechaVuelta() + ",");
+        writer.write("Tipo Vuelo: " + reserva.getTipoVuelo() + ",");
+        writer.write("Pasajeros: " + reserva.getPasajeros() + "\n");
+
+        // Guardar pasajeros
+        for (Pasajero p : reserva.getListaPasajeros()) {
+            writer.write("Pasajero: " + p.getNombre() + " " + p.getApellido() + ",");
+            writer.write("Cédula: " + p.getCedula() + ",");
+            writer.write("Nacionalidad: " + p.getNacionalidad() + ",");
+            writer.write("Correo: " + p.getCorreo() + ",");
+            writer.write("Teléfono: " + p.getTelefono() + ",");
+            writer.write("Género: " + p.getGenero() + "\n");
+        }
+
+        // Guardar asientos
+        for (String asiento : reserva.getAsientosIda()) {
+            writer.write("Asiento Ida: " + asiento + "\n");
+        }
+        for (String asiento : reserva.getAsientosVuelta()) {
+            writer.write("Asiento Vuelta: " + asiento + "\n");
+        }
+
+        // Guardar precios finales
+        writer.write("Precio Vuelos: " + txtPrecioVuelos.getText() + ",");
+        writer.write("Precio Asientos: " + txtPrecioAsientos.getText() + ",");
+        writer.write("Total: " + txtTotal.getText() + "\n");
+        writer.write("--------------------------------------------------\n");
+
+        JOptionPane.showMessageDialog(this, "Compra guardada correctamente en compras.csv");
+
+    } catch (IOException e) {
+        JOptionPane.showMessageDialog(this, "Error al guardar la compra: " + e.getMessage());
+        logger.log(java.util.logging.Level.SEVERE, null, e);
+    }
+
+
+        
+    }//GEN-LAST:event_btnComprarActionPerformed
+
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex) {
-            logger.log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new VistaFactura().setVisible(true));
-    }
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnComprar;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTable tblAsientosFactura;
+    private javax.swing.JTable tblPasajerosFactura;
+    private javax.swing.JTextField txtDestinoFactura;
+    private javax.swing.JTextField txtFechaIdaFactura;
+    private javax.swing.JTextField txtFechaVueltaFactura;
+    private javax.swing.JTextField txtNPasajeros;
+    private javax.swing.JTextField txtOrigenFactura;
+    private javax.swing.JTextField txtPrecioAsientos;
+    private javax.swing.JTextField txtPrecioVuelos;
+    private javax.swing.JTextField txtTipoVuelo;
+    private javax.swing.JTextField txtTotal;
     // End of variables declaration//GEN-END:variables
 }

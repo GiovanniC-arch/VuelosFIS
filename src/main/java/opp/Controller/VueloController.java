@@ -1,23 +1,24 @@
 package opp.Controller;
 
-import Service.VueloService;
-import opp.Model.Ciudad;
-import opp.Model.Vuelo;
+import oop.Repository.CiudadRepository;
 import java.util.List;
+import opp.Model.Ciudad;
+
 
 public class VueloController {
+    private CiudadRepository ciudadRepo;
 
-    private VueloService vueloService;
-
-    public VueloController(VueloService vueloService) {
-        this.vueloService = vueloService;
+    public VueloController() {
+        ciudadRepo = new CiudadRepository("ciudades.csv");
     }
 
-    public List<Vuelo> buscarVuelos(String origen, String destino, int pasajeros, boolean soloIda) {
-        return vueloService.buscarVuelos(origen, destino, soloIda, pasajeros);
+    public List<Ciudad> getTodasCiudades() {
+        return ciudadRepo.getCiudades();
     }
 
     public List<Ciudad> filtrarCiudades(String texto) {
-        return vueloService.filtrarCiudades(texto);
+        return ciudadRepo.filtrarPorNombre(texto);
     }
+
+
 }

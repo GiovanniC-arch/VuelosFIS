@@ -1,15 +1,7 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
+
 package opp.View;
 
-import javax.swing.JOptionPane;
 
-/**
- *
- * @author Hector Ramirez
- */
 public class VistaLogin extends javax.swing.JFrame {
     
     
@@ -98,21 +90,27 @@ public class VistaLogin extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btningresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btningresarActionPerformed
-        // TODO add your handling code here:
-        String usuario = txtusuario.getText().trim();
-    String password = new String(txtcontrasena.getPassword()).trim();
+       String usuario = txtusuario.getText();
+    String contrasena = new String(txtcontrasena.getPassword());
 
-    if (usuario.isEmpty() || password.isEmpty()) {
-        JOptionPane.showMessageDialog(this,
-            "Campos vacíos, asegúrate de llenar todos los campos",
-            "Error",
-            JOptionPane.WARNING_MESSAGE);
+    // Validación básica (puedes mejorarla con un servicio de autenticación)
+    if (!usuario.isEmpty() && !contrasena.isEmpty()) {
+        // Aquí podrías validar contra una lista de usuarios o BD
+        // Por ahora simulamos que cualquier usuario/contraseña es válido
+
+        // Abrir la ventana principal
+        VistaInicio vistaMain = new VistaInicio();
+        vistaMain.setVisible(true);
+
+        // Cerrar la ventana de login
+        this.dispose();
     } else {
-        // Abrir nueva ventana
-        VistaMain ventanaPrincipal = new VistaMain();
-        ventanaPrincipal.setVisible(true);
-        this.dispose(); // cerrar login
+        javax.swing.JOptionPane.showMessageDialog(this, 
+            "Debe ingresar usuario y contraseña", 
+            "Error de inicio de sesión", 
+            javax.swing.JOptionPane.ERROR_MESSAGE);
     }
+
 
     }//GEN-LAST:event_btningresarActionPerformed
 

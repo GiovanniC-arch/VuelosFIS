@@ -1,62 +1,76 @@
 
 package opp.View;
 
-import opp.Controller.VueloController;
-import javax.swing.*;
+import oop.Repository.OcupacionAsientosRepository;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import opp.Controller.BusquedaController;
+import opp.Controller.ReservaController;
+import opp.Model.Reserva;
+import opp.Model.Vuelo;
 
-public class VistaBusquedaVuelo extends javax.swing.JFrame {
-    
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(VistaBusquedaVuelo.class.getName());
-    private VueloController controller;
 
-  
-    /**
-     * Creates new form VistaBusquedaVuelo
-     */
+
+
+public class VistaBusquedaVueloIda extends javax.swing.JFrame {
     
-    public VistaBusquedaVuelo(VueloController controller) {
+    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(VistaBusquedaVueloIda.class.getName());
+    private Reserva reserva;
+    private ReservaController reservaController;
+    private BusquedaController busquedaController;
+    private OcupacionAsientosRepository ocupacionRepo;
+
+    public VistaBusquedaVueloIda(Reserva reserva, ReservaController reservaController, OcupacionAsientosRepository ocupacionRepo) {
         initComponents();
-        configurarVista();
-    }
-    public void setController(VueloController controller) {
-        this.controller = controller;
-    }
-
-    private void configurarVista() {
-
-        // Spinner de pasajeros (mínimo 1)
-        spPasajero.setModel(new SpinnerNumberModel(1, 1, 10, 1));
-
-        // Agrupar RadioButtons
-        ButtonGroup grupo = new ButtonGroup();
-        grupo.add(jRadioButton2); // Solo ida
-        grupo.add(jRadioButton1); // Ida y vuelta
-        jRadioButton2.setSelected(true);
-
-        // Modelo de la tabla
-        tablaResultados.setModel(new javax.swing.table.DefaultTableModel(
-        new Object[][]{},
-        new String[]{"Código", "Origen", "Destino", "Hora", "Precio"}
-        ));
-    }
-   
-
-    // ===== GETTERS PARA EL CONTROLLER =====
-    public JComboBox<String> getCmbOrigen() {
-        return cmbOrigen;
+        this.reserva = reserva;
+        this.reservaController = reservaController;
+        this.busquedaController = new BusquedaController();
+        this.ocupacionRepo = ocupacionRepo;
+        cargarTabla();
     }
 
-    public JComboBox<String> getCmbDestino() {
-    return cmbDestino;
+    private void cargarTabla() {
+        List<Vuelo> vuelos = busquedaController.buscarVuelos(
+            reserva.getOrigen().getNombre(),
+            reserva.getDestino().getNombre()
+        );
+
+        DefaultTableModel modelo = new DefaultTableModel();
+        modelo.addColumn("Origen");
+        modelo.addColumn("Destino");
+        modelo.addColumn("Hora Salida");
+        modelo.addColumn("Hora Llegada");
+        modelo.addColumn("Duración");
+        modelo.addColumn("Precio");
+
+        for (Vuelo v : vuelos) {
+    double precioFinal = v.getPrecio();
+
+    // Ajuste Premium
+    if ("Premium".equalsIgnoreCase(reserva.getTipoVuelo())) {
+        precioFinal = precioFinal * 1.5; // ejemplo: 50% más caro
     }
 
-    public JTable getTblVuelos() {
-    return tablaResultados;
+    modelo.addRow(new Object[]{
+        v.getOrigen().getNombre(),
+        v.getDestino().getNombre(),
+        v.getHoraSalida(),
+        v.getHoraLlegada(),
+        v.getDuracion(),
+        precioFinal
+    });
+}
+
+
+
+        tablaResultados.setModel(modelo);
     }
 
 
-
-
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -68,17 +82,12 @@ public class VistaBusquedaVuelo extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         btnConfirmar = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tablaResultados = new javax.swing.JTable();
-        cmbOrigen = new javax.swing.JComboBox<>();
-        cmbDestino = new javax.swing.JComboBox<>();
-        btnBusca1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -86,12 +95,6 @@ public class VistaBusquedaVuelo extends javax.swing.JFrame {
 
         jLabel3.setFont(new java.awt.Font("Segoe UI Semibold", 3, 24)); // NOI18N
         jLabel3.setText("Busqueda de Vuelos");
-
-        jLabel4.setFont(new java.awt.Font("Segoe UI", 3, 14)); // NOI18N
-        jLabel4.setText("Origen:");
-
-        jLabel5.setFont(new java.awt.Font("Segoe UI", 3, 14)); // NOI18N
-        jLabel5.setText("Destino:");
 
         jPanel2.setBackground(new java.awt.Color(0, 153, 204));
 
@@ -146,45 +149,13 @@ public class VistaBusquedaVuelo extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(tablaResultados);
 
-        cmbOrigen.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        cmbOrigen.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cmbOrigenActionPerformed(evt);
-            }
-        });
-
-        cmbDestino.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        cmbDestino.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cmbDestinoActionPerformed(evt);
-            }
-        });
-
-        btnBusca1.setBackground(new java.awt.Color(0, 0, 204));
-        btnBusca1.setForeground(new java.awt.Color(255, 255, 255));
-        btnBusca1.setText("Buscar");
-        btnBusca1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnBusca1ActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(42, 42, 42)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 624, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cmbOrigen, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(30, 30, 30)
-                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cmbDestino, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 624, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(72, Short.MAX_VALUE))
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
@@ -195,11 +166,6 @@ public class VistaBusquedaVuelo extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnConfirmar, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(63, 63, 63))
-            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                    .addContainerGap(547, Short.MAX_VALUE)
-                    .addComponent(btnBusca1, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(62, 62, 62)))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -209,23 +175,12 @@ public class VistaBusquedaVuelo extends javax.swing.JFrame {
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18))
+                        .addGap(66, 66, 66))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addComponent(btnConfirmar)
-                        .addGap(6, 6, 6)))
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel4)
-                    .addComponent(jLabel5)
-                    .addComponent(cmbOrigen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cmbDestino, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGap(54, 54, 54)))
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(48, Short.MAX_VALUE))
-            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(jPanel1Layout.createSequentialGroup()
-                    .addGap(166, 166, 166)
-                    .addComponent(btnBusca1)
-                    .addContainerGap(449, Short.MAX_VALUE)))
+                .addContainerGap(34, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -247,41 +202,54 @@ public class VistaBusquedaVuelo extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnConfirmarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfirmarActionPerformed
-        String origen = cmbOrigen.getSelectedItem().toString();
-        String destino = cmbDestino.getSelectedItem().toString();
-        int pasajeros = (int) spPasajero.getValue();
-        boolean soloIda = jRadioButton2.isSelected();
+        int filaSeleccionada = tablaResultados.getSelectedRow();
+        if (filaSeleccionada == -1) {
+            JOptionPane.showMessageDialog(this, "Debe seleccionar un vuelo", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
-        controller.buscarVuelos(origen, destino, pasajeros, soloIda);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDate fechaIda = LocalDate.parse(reserva.getFechaIda(), formatter);
 
-    }//GEN-LAST:event_btnConfirmarActionPerformed
+        Vuelo vueloSeleccionado = new Vuelo(
+            reserva.getOrigen(),
+            reserva.getDestino(),
+            tablaResultados.getValueAt(filaSeleccionada, 2).toString(),
+            tablaResultados.getValueAt(filaSeleccionada, 3).toString(),
+            tablaResultados.getValueAt(filaSeleccionada, 4).toString(),
+            Double.parseDouble(tablaResultados.getValueAt(filaSeleccionada, 5).toString()),
+            fechaIda
+        );
 
-    private void cmbOrigenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbOrigenActionPerformed
-        // TODO add your handling code here:
+        reservaController.asignarVueloIda(reserva, vueloSeleccionado);
+
+        JOptionPane.showMessageDialog(this, "Vuelo de ida confirmado");
+
+        if (reserva.isEsIdaVuelta()) {
+    // Primero selecciona asientos de ida
+    VistaAsientos vistaAsientos = new VistaAsientos(reserva, vueloSeleccionado, ocupacionRepo, reservaController);
+    vistaAsientos.setVisible(true);
+} else {
+    // Solo ida → asientos ida y luego pasajeros
+    VistaAsientos vistaAsientos = new VistaAsientos(reserva, vueloSeleccionado, ocupacionRepo, reservaController);
+    vistaAsientos.setVisible(true);
+}
+this.dispose();
+
+
+
         
-    }//GEN-LAST:event_cmbOrigenActionPerformed
-
-    private void cmbDestinoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbDestinoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_cmbDestinoActionPerformed
-
-    private void btnBusca1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBusca1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnBusca1ActionPerformed
+            
+    }//GEN-LAST:event_btnConfirmarActionPerformed
 
     /**
      * @param args the command line arguments
      */
    
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnBusca1;
     private javax.swing.JButton btnConfirmar;
-    private javax.swing.JComboBox<String> cmbDestino;
-    private javax.swing.JComboBox<String> cmbOrigen;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
@@ -289,7 +257,5 @@ public class VistaBusquedaVuelo extends javax.swing.JFrame {
     private javax.swing.JTable tablaResultados;
     // End of variables declaration//GEN-END:variables
 
-    public JTable getTablaResultados() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+    
 }

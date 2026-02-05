@@ -1,101 +1,35 @@
 package opp.View;
 
-import DAO.VueloArchivoDAO;
-import Service.VueloService;
-import Service.VueloServiceImpl;
+
+import oop.Repository.OcupacionAsientosRepository;
+import java.util.List;
+import javax.swing.JOptionPane;
+import opp.Controller.ReservaController;
 import opp.Controller.VueloController;
 import opp.Model.Ciudad;
+import opp.Model.Reserva;
 
-import java.util.List;
-import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 
-public class VistaMain extends javax.swing.JFrame {
-
-    private VueloController controller;
-    private JPopupMenu sugerenciasOrigen;
-    private JPopupMenu sugerenciasDestino;
-
-    public VistaMain() {
-
-        VueloService service =
-                new VueloServiceImpl(new VueloArchivoDAO());
-
-        controller = new VueloController(service);
-
+public class VistaInicio extends javax.swing.JFrame {
+    private ReservaController reservaController;
+    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(VistaInicio.class.getName());
+     
+    public VistaInicio() {
         initComponents();
-        inicializarAutoCompletarOrigen();
-        inicializarAutoCompletarDestino();
-    }
+        reservaController = new ReservaController();
 
-    private void inicializarAutoCompletarOrigen() {
-        sugerenciasOrigen = new JPopupMenu();
+        // Configuración inicial
+        txtFechaVuelta.setEnabled(false); // al inicio solo ida
+        cbxTipovuelo.addItem("Clase económica");
+        cbxTipovuelo.addItem("Clase premium");
 
-        txtOrigen.getDocument().addDocumentListener(new DocumentListener() {
-            public void insertUpdate(DocumentEvent e) { actualizar(); }
-            public void removeUpdate(DocumentEvent e) { actualizar(); }
-            public void changedUpdate(DocumentEvent e) {}
-
-            private void actualizar() {
-                sugerenciasOrigen.removeAll();
-                String texto = txtOrigen.getText().trim();
-                if (texto.isEmpty()) return;
-
-                List<Ciudad> ciudades = controller.filtrarCiudades(texto);
-
-                for (Ciudad c : ciudades) {
-                    JMenuItem item = new JMenuItem(c.getNombre());
-                    item.addActionListener(e -> {
-                        txtOrigen.setText(c.getNombre());
-                        sugerenciasOrigen.setVisible(false);
-                    });
-                    sugerenciasOrigen.add(item);
-                }
-
-                if (!ciudades.isEmpty()) {
-                    sugerenciasOrigen.show(txtOrigen, 0, txtOrigen.getHeight());
-                }
-            }
-        });
-    }
-
-    private void inicializarAutoCompletarDestino() {
-        sugerenciasDestino = new JPopupMenu();
-
-        txtDestino.getDocument().addDocumentListener(new DocumentListener() {
-            public void insertUpdate(DocumentEvent e) { actualizar(); }
-            public void removeUpdate(DocumentEvent e) { actualizar(); }
-            public void changedUpdate(DocumentEvent e) {}
-
-            private void actualizar() {
-                sugerenciasDestino.removeAll();
-                String texto = txtDestino.getText().trim();
-                if (texto.isEmpty()) return;
-
-                List<Ciudad> ciudades = controller.filtrarCiudades(texto);
-
-                for (Ciudad c : ciudades) {
-                    JMenuItem item = new JMenuItem(c.getNombre());
-                    item.addActionListener(e -> {
-                        txtDestino.setText(c.getNombre());
-                        sugerenciasDestino.setVisible(false);
-                    });
-                    sugerenciasDestino.add(item);
-                }
-
-                if (!ciudades.isEmpty()) {
-                    sugerenciasDestino.show(txtDestino, 0, txtDestino.getHeight());
-                }
-            }
-        });
-    }
-
-    // initComponents() y variables generadas siguen igual
-}
+        // Spinner de pasajeros: mínimo 1, máximo 3
+        spnPasajeros.setModel(new javax.swing.SpinnerNumberModel(1, 1, 3, 1));
 
 
+        
 
+    }    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -189,13 +123,22 @@ public class VistaMain extends javax.swing.JFrame {
 
         txtDestino.setBackground(new java.awt.Color(214, 234, 245));
         txtDestino.setFont(new java.awt.Font("Segoe UI Semibold", 2, 14)); // NOI18N
+        txtDestino.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtDestinoActionPerformed(evt);
+            }
+        });
 
         jLabel5.setFont(new java.awt.Font("Segoe UI", 3, 14)); // NOI18N
         jLabel5.setText("Tipo de vuelo");
 
         cbxTipovuelo.setBackground(new java.awt.Color(214, 234, 245));
         cbxTipovuelo.setFont(new java.awt.Font("Segoe UI Semibold", 3, 14)); // NOI18N
-        cbxTipovuelo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Clase Economica", "Clase Premium" }));
+        cbxTipovuelo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbxTipovueloActionPerformed(evt);
+            }
+        });
 
         jLabel6.setFont(new java.awt.Font("Segoe UI", 3, 14)); // NOI18N
         jLabel6.setText("Pasajeros");
@@ -204,15 +147,30 @@ public class VistaMain extends javax.swing.JFrame {
         btnIda.setFont(new java.awt.Font("Segoe UI Semibold", 3, 14)); // NOI18N
         btnIda.setText("Ida");
         btnIda.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        btnIda.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnIdaActionPerformed(evt);
+            }
+        });
 
         btnIdaVuelta.setBackground(new java.awt.Color(102, 204, 255));
         btnIdaVuelta.setFont(new java.awt.Font("Segoe UI Semibold", 3, 14)); // NOI18N
         btnIdaVuelta.setText("Ida y Vuelta");
         btnIdaVuelta.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        btnIdaVuelta.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnIdaVueltaActionPerformed(evt);
+            }
+        });
 
         btnBuscarVuelo.setBackground(new java.awt.Color(255, 204, 204));
         btnBuscarVuelo.setFont(new java.awt.Font("Segoe UI Semibold", 3, 24)); // NOI18N
         btnBuscarVuelo.setText("Buscar vuelos");
+        btnBuscarVuelo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBuscarVueloActionPerformed(evt);
+            }
+        });
 
         txtFechaIda.setBackground(new java.awt.Color(214, 234, 245));
         txtFechaIda.setFont(new java.awt.Font("Segoe UI Semibold", 3, 14)); // NOI18N
@@ -224,6 +182,11 @@ public class VistaMain extends javax.swing.JFrame {
 
         txtFechaVuelta.setBackground(new java.awt.Color(214, 234, 245));
         txtFechaVuelta.setFont(new java.awt.Font("Segoe UI Semibold", 3, 14)); // NOI18N
+        txtFechaVuelta.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtFechaVueltaActionPerformed(evt);
+            }
+        });
 
         jLabel8.setFont(new java.awt.Font("Segoe UI", 3, 14)); // NOI18N
         jLabel8.setText("Fecha de ida ");
@@ -386,6 +349,67 @@ public class VistaMain extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtOrigenActionPerformed
 
+    private void txtDestinoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtDestinoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtDestinoActionPerformed
+
+    private void btnBuscarVueloActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarVueloActionPerformed
+        String origenTexto = txtOrigen.getText();
+    String destinoTexto = txtDestino.getText();
+
+    List<Ciudad> origenCoincidencias = reservaController.filtrarCiudades(origenTexto);
+    List<Ciudad> destinoCoincidencias = reservaController.filtrarCiudades(destinoTexto);
+
+    if (!origenCoincidencias.isEmpty() && !destinoCoincidencias.isEmpty()) {
+        Ciudad origen = origenCoincidencias.get(0);
+        Ciudad destino = destinoCoincidencias.get(0);
+
+        String tipoVuelo = cbxTipovuelo.getSelectedItem().toString();
+        String fechaIda = txtFechaIda.getText();
+        String fechaVuelta = txtFechaVuelta.isEnabled() ? txtFechaVuelta.getText() : null;
+        int pasajeros = (int) spnPasajeros.getValue();
+
+        try {
+            Reserva reserva = reservaController.crearReserva(origen, destino, tipoVuelo, fechaIda, fechaVuelta, pasajeros);
+
+            // Repositorio compartido de ocupación
+            OcupacionAsientosRepository ocupacionRepo = new OcupacionAsientosRepository();
+
+            VistaBusquedaVueloIda vistaBusqueda = new VistaBusquedaVueloIda(reserva, reservaController, ocupacionRepo);
+            vistaBusqueda.setVisible(true);
+            this.dispose();
+        } catch (IllegalArgumentException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    } else {
+        JOptionPane.showMessageDialog(this,
+                "Ciudad no encontrada en el archivo CSV",
+                "Error", JOptionPane.ERROR_MESSAGE);
+    }
+
+
+    }//GEN-LAST:event_btnBuscarVueloActionPerformed
+
+    private void cbxTipovueloActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxTipovueloActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cbxTipovueloActionPerformed
+
+    private void btnIdaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIdaActionPerformed
+        // TODO add your handling code here:
+        txtFechaVuelta.setEnabled(false);
+        txtFechaVuelta.setText("");
+    }//GEN-LAST:event_btnIdaActionPerformed
+
+    private void btnIdaVueltaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIdaVueltaActionPerformed
+        // TODO add your handling code here:
+        txtFechaVuelta.setEnabled(true);
+
+    }//GEN-LAST:event_btnIdaVueltaActionPerformed
+
+    private void txtFechaVueltaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtFechaVueltaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtFechaVueltaActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -417,3 +441,4 @@ public class VistaMain extends javax.swing.JFrame {
     private javax.swing.JTextField txtOrigen;
     // End of variables declaration//GEN-END:variables
 }
+
