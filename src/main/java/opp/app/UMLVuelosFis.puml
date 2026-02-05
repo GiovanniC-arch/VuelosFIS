@@ -1,2 +1,111 @@
 @startuml
+
+class Vuelo {
+  - origen: Ciudad
+  - destino: Ciudad
+  - horaSalida: String
+  - horaLlegada: String
+  - duracion: String
+  - precio: double
+  - fecha: LocalDate
+}
+
+class Ciudad {
+  - nombre: String
+}
+
+class Pasajero {
+  - nombre: String
+  - cedula: String
+  - correo: String
+}
+
+class Asiento {
+  - codigo: String
+  - ocupado: boolean
+}
+
+class Reserva {
+  - pasajero: Pasajero
+  - vueloIda: Vuelo
+  - vueloVuelta: Vuelo
+  - asientosIda: List<Asiento>
+  - asientosVuelta: List<Asiento>
+  - total: double
+}
+
+class VueloRepository {
+  + obtenerVuelos(): List<Vuelo>
+}
+
+class CiudadRepository {
+  + obtenerCiudades(): List<Ciudad>
+}
+
+class OcupacionAsientosRepository {
+  + obtenerAsientos(vuelo: Vuelo): List<Asiento>
+}
+
+class AsientoService {
+  + obtenerAsientosDisponibles(vuelo: Vuelo): List<Asiento>
+}
+
+class ReservaService {
+  + crearReserva(reserva: Reserva)
+}
+
+class VueloController {
+  - vueloRepository: VueloRepository
+  + buscarVuelos()
+}
+
+class BusquedaController {
+  + buscarIda()
+  + buscarVuelta()
+}
+
+class AsientoController {
+  - asientoService: AsientoService
+  + cargarAsientos()
+}
+
+class ReservaController {
+  - reservaService: ReservaService
+  + confirmarReserva()
+}
+
+class VistaInicio
+class VistaLogin
+class VistaBusquedaVueloIda
+class VistaBusquedaVueloVuelta
+class VistaAsientos
+class VistaAsientosVuelta
+class VistaInfoPasajeros
+class VistaFactura
+
+Vuelo --> Ciudad : origen
+Vuelo --> Ciudad : destino
+
+Reserva --> Pasajero
+Reserva --> Vuelo : ida
+Reserva --> Vuelo : vuelta
+Reserva --> Asiento
+
+VueloController --> VueloRepository
+BusquedaController --> VueloController
+
+AsientoController --> AsientoService
+AsientoService --> OcupacionAsientosRepository
+
+ReservaController --> ReservaService
+ReservaService --> Reserva
+
+VistaInicio --> BusquedaController
+VistaBusquedaVueloIda --> BusquedaController
+VistaBusquedaVueloVuelta --> BusquedaController
+VistaAsientos --> AsientoController
+VistaAsientosVuelta --> AsientoController
+VistaInfoPasajeros --> ReservaController
+VistaFactura --> ReservaController
+
 @enduml
