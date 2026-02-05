@@ -1,8 +1,8 @@
 
 package opp.Controller;
 
-import oop.Repository.CiudadRepository;
-import oop.Service.ReservaService;
+import opp.Repository.CiudadRepository;
+import opp.Service.ReservaService;
 import java.util.List;
 import opp.Model.Ciudad;
 import opp.Model.Reserva;

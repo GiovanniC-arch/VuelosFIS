@@ -1,7 +1,7 @@
 
 package opp.View;
 
-import oop.Repository.OcupacionAsientosRepository;
+import opp.Repository.OcupacionAsientosRepository;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;

@@ -2,7 +2,7 @@
 package opp.Controller;
 
 import javax.swing.table.DefaultTableModel;
-import oop.Service.AsientoService;
+import opp.Service.AsientoService;
 import opp.Model.Asiento;
 import opp.Model.Pasajero;
 

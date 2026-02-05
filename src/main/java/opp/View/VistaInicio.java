@@ -1,7 +1,7 @@
 package opp.View;
 
 
-import oop.Repository.OcupacionAsientosRepository;
+import opp.Repository.OcupacionAsientosRepository;
 import java.util.List;
 import javax.swing.JOptionPane;
 import opp.Controller.ReservaController;

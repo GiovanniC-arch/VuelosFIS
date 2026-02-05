@@ -3,7 +3,7 @@ package opp.View;
 
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
-import oop.Repository.OcupacionAsientosRepository;
+import opp.Repository.OcupacionAsientosRepository;
 import javax.swing.table.DefaultTableModel;
 import opp.Controller.ReservaController;
 import opp.Model.Reserva;

@@ -1,7 +1,7 @@
 
 package opp.Controller;
 
-import oop.Repository.VueloRepository;
+import opp.Repository.VueloRepository;
 import java.util.List;
 import java.util.stream.Collectors;
 import opp.Model.Vuelo;

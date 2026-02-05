@@ -1,6 +1,6 @@
 package opp.Controller;
 
-import oop.Repository.CiudadRepository;
+import opp.Repository.CiudadRepository;
 import java.util.List;
 import opp.Model.Ciudad;
 

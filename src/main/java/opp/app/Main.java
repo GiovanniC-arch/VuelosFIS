@@ -1,4 +1,4 @@
-package app;
+package opp.app;
 
 import javax.swing.SwingUtilities;
 import opp.View.VistaLogin;
